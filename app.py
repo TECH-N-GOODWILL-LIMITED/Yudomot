@@ -1,16 +1,18 @@
 from flask import Flask, request, jsonify
 import mysql.connector
 from datetime import datetime
+import os
+from dotenv import load_dotenv
 
 # Create a Flask app instance
 app = Flask(__name__)
 
 try:
     conn = mysql.connector.connect(
-        host="209.159.145.74",
-        user="ngslccor_yudomot",
-        password="1WiWIce[}8l4",
-        database="ngslccor_yudomot"
+        host=os.getenv("DB_HOST"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_DATABASE")
     )
     if conn:
         print("Database Connected!!!")
