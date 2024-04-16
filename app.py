@@ -23,6 +23,11 @@ except mysql.connector.Error as err:
 # Define a route and a view function
 @app.route('/', methods=['GET'])
 def index():
+    return "Welcome To Our API"
+
+# Define a route and a view function
+@app.route('/country_list', methods=['GET'])
+def country_list():
     country = request.args.get('country')
     city = request.args.get('city')
 
@@ -148,15 +153,14 @@ def country_list_update():
     data = request.get_json()
     country = data.get('country')
     city = data.get('city')
-    country_id = data.get('id')
-    current_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    country_id = data.get('country_id')
 
     try:
         # Create a cursor object
         cursor = conn.cursor()
 
         # Define the UPDATE query with placeholders for values
-        update_query = "UPDATE country_list SET country = %s, city = %s WHERE id = %i"
+        update_query = "UPDATE country_list SET country = %s, city = %s WHERE id = %s"
 
         # Define the values to be updated (replace these with your actual values)
         values = (country, city, country_id)
@@ -168,6 +172,36 @@ def country_list_update():
         conn.commit()
 
         return jsonify({'result': 'Data updated successfully!'})
+    except mysql.connector.Error as cursor_err:
+        return jsonify({'result': cursor_err})
+    finally:
+        # Close the cursor
+        if 'cursor' in locals():
+            cursor.close()
+
+
+@app.route('/country_list/delete', methods=['POST'])
+def country_list_delete():
+    data = request.get_json()
+    country_id = data.get('country_id')
+
+    try:
+        # Create a cursor object
+        cursor = conn.cursor()
+
+        # Define the UPDATE query with placeholders for values
+        update_query = "DELETE FROM country_list WHERE id = %s"
+
+        # Define the values to be updated (replace these with your actual values)
+        values = (country_id,)
+
+        # Execute the UPDATE query with the values
+        cursor.execute(update_query, values)
+
+        # Commit the transaction
+        conn.commit()
+
+        return jsonify({'result': 'Data deleted successfully!'})
     except mysql.connector.Error as cursor_err:
         return jsonify({'result': cursor_err})
     finally:
