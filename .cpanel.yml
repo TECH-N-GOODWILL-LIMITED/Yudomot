@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/ngslccor/yudomot.techengood.com/
+    - /bin/cp -R * $DEPLOYPATH
